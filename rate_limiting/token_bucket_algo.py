@@ -24,6 +24,7 @@ class TokenBucket:
         
     def add_tokens(self,lapse:float):
         self._tokens += self.fill_rate * int(lapse)
+        self._tokens %= self.capacity +1 
 
 
 
