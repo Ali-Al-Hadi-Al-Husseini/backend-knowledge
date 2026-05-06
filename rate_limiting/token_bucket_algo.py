@@ -1,12 +1,28 @@
 import unittest
 import time
 class TokenBucket:
-    def __init__(self):
-        pass
-        
-    def consume(self):
-        pass
+    def __init__(self, capacity: int,fill_rate: float) -> None:
 
+        self.capacity = capacity
+        self.fill_rate = fill_rate
+        self._tokens = capacity
+        self.time_stamp = time.time()
+        
+    def consume(self,tokens:int = 1 ) -> None:
+        consumed = False
+        if self._tokens >= tokens:
+            self._tokens -= tokens
+            consumed = True
+        
+        now = time.time()
+        lapse = now - self.time_stamp
+        if lapse >= 60:
+            self.add_tokens(lapse)
+
+        return consumed
+        
+    def add_tokens(self,lapse:float):
+        self._tokens += self.fill_rate * int(lapse)
 
 
 
@@ -36,3 +52,6 @@ class TestTokenBucket(unittest.TestCase):
         self.assertTrue(bucket.consume())
         self.assertTrue(bucket.consume())
         self.assertFalse(bucket.consume())
+
+if __name__ == "__main__":
+    unittest.main()
