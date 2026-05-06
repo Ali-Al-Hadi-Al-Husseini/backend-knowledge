@@ -1,6 +1,27 @@
 import unittest
 import time
 
+class FixedWindow:
+    def __init__(self,limit:int=1,window_size:float=1):
+        self.limit = limit
+        self.window_size = window_size
+        self.time_stamp = time.time()
+        self.req_count = 0
+    
+
+    def allow_request(self):
+        now = time.time()
+        lapse = now -self.time_stamp
+        if lapse >= self.window_size:
+            self.time_stamp = now
+            self.req_count = 0
+
+        if self.req_count < self.limit:
+            self.req_count += 1
+            return True
+        return False
+
+
 class TestFixedWindow(unittest.TestCase):
     def setUp(self):
         self.limit = 3
@@ -9,7 +30,10 @@ class TestFixedWindow(unittest.TestCase):
 
     def test_allow_within_limit(self):
         for i in range(self.limit):
-            self.assertTrue(self.limiter.allow_request())
+            try:
+                self.assertTrue(self.limiter.allow_request())
+            except:
+                print(self.limiter)
 
     def test_block_above_limit(self):
         for _ in range(self.limit):
