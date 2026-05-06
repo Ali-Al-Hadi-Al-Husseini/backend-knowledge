@@ -8,16 +8,17 @@ class TokenBucket:
         self._tokens = capacity
         self.time_stamp = time.time()
         
-    def consume(self,tokens:int = 1 ) -> None:
+    def consume(self,tokens:int = 1) -> None:
         consumed = False
+        now = time.time()
+        lapse = now - self.time_stamp
+        if lapse >= 1:
+            self.add_tokens(lapse)
+
         if self._tokens >= tokens:
             self._tokens -= tokens
             consumed = True
         
-        now = time.time()
-        lapse = now - self.time_stamp
-        if lapse >= 60:
-            self.add_tokens(lapse)
 
         return consumed
         
