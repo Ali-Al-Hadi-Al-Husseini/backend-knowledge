@@ -1,6 +1,14 @@
 import unittest
 import time
 
+class SlidingWindow:
+    def __init__(self,limit:int= 1,window_size:float= 1):
+        self.limit = limit
+        self.window_size = window_size
+        self.time_stamp = time.time()
+    def allow_request(self)-> bool:
+        pass
+
 class TestSlidingWindow(unittest.TestCase):
     def setUp(self):
         self.limit = 3
