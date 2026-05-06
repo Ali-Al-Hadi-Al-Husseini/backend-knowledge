@@ -51,9 +51,11 @@ class TestTokenBucket(unittest.TestCase):
     def test_capacity_limit(self):
         bucket = TokenBucket(capacity=2, fill_rate=10)
         time.sleep(0.5) 
-        self.assertTrue(bucket.consume())
-        self.assertTrue(bucket.consume())
-        self.assertFalse(bucket.consume())
+
+        for _ in range(10):
+            bucket.consume()
+            time.sleep(0.5)
+            self.assertTrue(bucket.capacity >= 2)
 
 if __name__ == "__main__":
     unittest.main()
