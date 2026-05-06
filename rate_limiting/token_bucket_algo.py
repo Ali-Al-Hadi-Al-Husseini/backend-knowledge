@@ -1,10 +1,10 @@
 import unittest
 import time
 class TokenBucket:
-    def __init__(self, capacity: int,fill_rate: float) -> None:
-
+    def __init__(self, capacity: int,fill_rate: float,fill_time:float=1) -> None:
         self.capacity = capacity
         self.fill_rate = fill_rate
+        self.fill_time = fill_time
         self._tokens = capacity
         self.time_stamp = time.time()
         
@@ -12,7 +12,7 @@ class TokenBucket:
         consumed = False
         now = time.time()
         lapse = now - self.time_stamp
-        if lapse >= 1:
+        if lapse >= self.fill_time:
             self.add_tokens(lapse)
 
         if self._tokens >= tokens:
