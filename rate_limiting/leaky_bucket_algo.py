@@ -1,8 +1,33 @@
+from collections import deque
+import time
 
+class LeakyBucket:
+    def __init__(self,capacity=1,leak_rate:float= 1,leak_time:float= 1):
+        self.queue = deque()
+        self.capacity =  capacity
+        self.leak_rate = leak_rate
+        self.leak_time = leak_time
+        self.time_stamp = time.time()
+        
+    def add_request(self):
+        now = time.time() 
+        lapse = now - self.time_stamp
+        added = False
 
+        if lapse >= self.leak_time:
+            self.leak(now)
+        if len(self.queue) <= self.capacity:
+            self.queue.append("req")
+            added = True
+        return added
 
+        
 
-
+    def leak(self,now:float):
+        for _ in range(int(self.leak_rate)):
+            if self.queue:
+                self.queue.popleft()
+        self.time_stamp = now
 
 
 
@@ -10,7 +35,6 @@
 
 
 import unittest
-import time
 
 class TestLeakyBucket(unittest.TestCase):
     def setUp(self):
