@@ -16,7 +16,7 @@ class LeakyBucket:
 
         if lapse >= self.leak_time:
             self.leak(now)
-        if len(self.queue) <= self.capacity:
+        if len(self.queue) < self.capacity:
             self.queue.append("req")
             added = True
         return added
@@ -52,7 +52,7 @@ class TestLeakyBucket(unittest.TestCase):
         self.assertFalse(self.bucket.add_request())
 
     def test_leak_behavior(self):
-        bucket = LeakyBucket(capacity=1, leak_rate=10)
+        bucket = LeakyBucket(capacity=1, leak_rate=10,leak_time=0.1)
         self.assertTrue(bucket.add_request())
         self.assertFalse(bucket.add_request())
         time.sleep(0.15)
