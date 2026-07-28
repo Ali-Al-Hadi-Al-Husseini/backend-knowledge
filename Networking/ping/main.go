@@ -70,7 +70,18 @@ func Ping(dest string, attempts int, delay time.Duration) error {
 		if err != nil {
 			return fmt.Errorf("failed to parse ICMP message: %w", err)
 		}
+		echoType := parsedMsg.Type
+		body := parsedMsg.Body.(*icmp.Echo)
+		proto := parsedMsg.Type.Protocol()
 
+		switch parsedMsg.Type {
+		case ipv4.ICMPTypeEchoReply:
+			elapsed := endTime.Sub(startTime)
+			fmt.Printf("%d bytes from %s: pid=%d, icmp_type=%v, icmp_seq=%d, data=%s, time:%dμs\n", body.Len(proto), peer, body.ID, echoType, body.Seq, string(body.Data), elapsed.Milliseconds())
+		default:
+			fmt.Printf("received unexpected message from %s: pid=%d, icmp_type=%v, icmp_seq=%d, data=%s\n", peer, body.ID, echoType, body.Seq, string(body.Data))
+		}
+		time.Sleep(delay * time.Second)
 	}
 	return nil
 }
