@@ -5,6 +5,9 @@ import (
 	"net"
 	"os"
 	"time"
+
+	"golang.org/x/net/icmp"
+	"golang.org/x/net/ipv4"
 )
 
 func main() {
@@ -27,5 +30,20 @@ func Ping(dest string, attempts int, delay time.Duration) error {
 
 	defer conn.Close()
 
+	data := []byte("hola amigo")
+
+	for i := 0; i < attempts; i++ {
+
+		echoReq := icmp.Message{
+			Type: ipv4.ICMPTypeEcho,
+			Code: 0,
+			Body: &icmp.Echo{
+				ID:   os.Getpid() & 0xffff,
+				Seq:  i,
+				Data: data[:],
+			},
+		}
+
+	}
 	return nil
 }
