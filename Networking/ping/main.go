@@ -58,6 +58,19 @@ func Ping(dest string, attempts int, delay time.Duration) error {
 			return fmt.Errorf("server unreachable")
 		}
 
+		resp := make([]byte, 512)
+		n, peer, err := conn.ReadFrom(resp)
+		endTime := time.Now()
+
+		if err != nil {
+			return fmt.Errorf("failed to read ICMP response: %w", err)
+		}
+
+		parsedMsg, err := icmp.ParseMessage(1, resp[:n])
+		if err != nil {
+			return fmt.Errorf("failed to parse ICMP message: %w", err)
+		}
+
 	}
 	return nil
 }
