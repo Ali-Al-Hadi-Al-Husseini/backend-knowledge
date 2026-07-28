@@ -43,6 +43,20 @@ func Ping(dest string, attempts int, delay time.Duration) error {
 				Data: data[:],
 			},
 		}
+		message, err := echoReq.Marshal(nil)
+		if err != nil {
+			return fmt.Errorf("failed to serilieze message")
+		}
+
+		err = conn.SetReadDeadline(time.Now().Add(1 * time.Second))
+		if err != nil {
+			return fmt.Errorf("Failed to readdead line")
+		}
+		startTime := time.Now()
+		_, err = conn.Write(message)
+		if err != nil {
+			return fmt.Errorf("server unreachable")
+		}
 
 	}
 	return nil
